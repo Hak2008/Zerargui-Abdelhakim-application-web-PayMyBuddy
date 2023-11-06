@@ -17,7 +17,6 @@ public class BankAccountService {
     private final BankAccountRepository bankAccountRepository;
     private final UserRepository userRepository;
 
-
     @Transactional
     public BankAccount createBankAccount(User user, BigDecimal initialBalance) {
         if (initialBalance.compareTo(BigDecimal.ZERO) < 0) {
