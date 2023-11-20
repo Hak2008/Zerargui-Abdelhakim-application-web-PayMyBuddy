@@ -7,18 +7,19 @@ import java.util.Date;
 
 @Entity
 @Data
+@Table(name = "transaction")
 public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "sender", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "sender_accountNumber", nullable = false)
     private BankAccount sender;
 
-    @OneToOne
-    @JoinColumn(name = "receiver", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "receiver_accountNumber", nullable = false)
     private BankAccount receiver;
 
     @Column(nullable = false)

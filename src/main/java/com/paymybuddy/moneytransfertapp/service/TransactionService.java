@@ -5,13 +5,14 @@ import com.paymybuddy.moneytransfertapp.model.Transaction;
 import com.paymybuddy.moneytransfertapp.model.User;
 import com.paymybuddy.moneytransfertapp.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TransactionService {
@@ -31,7 +32,7 @@ public class TransactionService {
         double feePercentage = 0.005;
         double fee = amount.doubleValue() * feePercentage;
 
-        BigDecimal totalAmount = amount.subtract(BigDecimal.valueOf(fee));// Total amount to transfer (amount - fees)
+        BigDecimal totalAmount = amount.add(BigDecimal.valueOf(fee)); // Total amount to transfer (amount + fees)
 
         // Create the transaction
         Transaction transaction = new Transaction();
@@ -45,8 +46,8 @@ public class TransactionService {
         transaction.setPaymentReason(paymentReason);
 
         // Update account balances
-        BigDecimal newSenderBalance = senderBalance.subtract(amount);
-        BigDecimal newReceiverBalance = receiver.getBankAccount().getBalance().add(totalAmount);
+        BigDecimal newSenderBalance = senderBalance.subtract(totalAmount);
+        BigDecimal newReceiverBalance = receiver.getBankAccount().getBalance().add(amount);
 
         sender.getBankAccount().setBalance(newSenderBalance);
         receiver.getBankAccount().setBalance(newReceiverBalance);
@@ -60,9 +61,9 @@ public class TransactionService {
         return transaction;
     }
 
-    @Transactional
-    public List<Transaction> getAllTransactions() {
-        return transactionRepository.findAll();
+    public List<Transaction> getUserTransactions(User user) {
+        return transactionRepository.findTransactionsBySenderOrReceiver(user.getBankAccount(), user.getBankAccount());
     }
+
 
 }

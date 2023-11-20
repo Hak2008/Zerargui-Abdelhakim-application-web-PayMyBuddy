@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="PayMyBuddy2.css">
+    <style>
+        body {
+            background-color: #fff;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            border: 2px solid #000;
+            color: #000;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 20px; /* Added padding property to space frame content */
+        }
+
+        .navbar {
+            background-color: #000;
+        }
+
+        .navbar-brand {
+            color: white;
+            margin-left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            height: auto;
+        }
+
+        .card-title {
+            background-color: #28a745; /* Added the padding property to space the frame contentGreen color for the h2 title */
+            padding: 10px;
+            border-radius: 10px;
+            color: #fff;
+        }
+    </style>
+    <title>login</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark">
+        <span class="navbar-brand mb-0 h1">Pay My Buddy</span>
+    </nav>
+
+    <div class="container">
+        <!-- Banner with black background -->
+        <div class="banner">
+        </div>
+        <!-- Three circles left in the banner -->
+        <div class="circle-container">
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title text-center">Pay My Buddy</h2>
+                <form action="/users/login" method="post" th:object="${user}" enctype="application/x-www-form-urlencoded">
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i></label>
+                        <input type="email" class="form-control custom-width" id="email" name="email" placeholder="Email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-key"></i></label>
+                        <input type="password" class="form-control custom-width" id="password" name="password" placeholder="Password" required>
+                    </div>
+
+                    <div class="form-group form-check text-center">
+                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                        <label class="form-check-label" for="remember">Remember me</label>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">login</button>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="button" class="btn btn-success" onclick="window.location.href='/users/register'">Create your account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
+

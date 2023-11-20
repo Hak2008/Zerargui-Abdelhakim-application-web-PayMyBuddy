@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #fff;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            border: 2px solid #000;
+            color: #000;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .navbar {
+            background-color: #000;
+        }
+
+        .navbar-brand {
+            color: white;
+            margin-left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            height: auto;
+        }
+
+        .card-title {
+            background-color: #28a745;
+            padding: 10px;
+            border-radius: 10px;
+            color: #fff;
+        }
+    </style>
+    <title>register</title>
+</head>
+
+<body>
+<!-- Navigation bar -->
+<nav class="navbar navbar-dark">
+    <span class="navbar-brand mb-0 h1">Pay My Buddy</span>
+</nav>
+<!-- End of navigation bar -->
+
+<div class="container mt-4">
+    <section class="add-friend-section">
+        <h2 class="mb-4 d-flex justify-content-between align-items-center">Add Friend</h2>
+        <div class="bg-light p-4 rounded">
+            <!-- ... -->
+            <form method="post" action="/add-friend">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="userId">Your ID</label>
+                        <input type="text" class="form-control" id="userId" name="userId" placeholder="Your ID" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="friendEmail">Friend's Email</label>
+                        <input type="email" class="form-control" id="friendEmail" name="friendEmail" placeholder="Friend's Email" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">Add Friend</button>
+            </form>
+            <!-- ... -->
+
+        </div>
+    </section>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

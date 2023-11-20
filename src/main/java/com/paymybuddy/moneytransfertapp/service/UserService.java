@@ -2,11 +2,13 @@ package com.paymybuddy.moneytransfertapp.service;
 
 import com.paymybuddy.moneytransfertapp.exception.UserAlreadyExistsException;
 import com.paymybuddy.moneytransfertapp.exception.UserNotFoundException;
+import com.paymybuddy.moneytransfertapp.model.Transaction;
 import com.paymybuddy.moneytransfertapp.model.User;
+import com.paymybuddy.moneytransfertapp.repository.TransactionRepository;
 import com.paymybuddy.moneytransfertapp.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -14,12 +16,14 @@ import org.springframework.validation.annotation.Validated;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Validated
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final TransactionRepository transactionRepository;
 
     @Transactional
     public User registerUser(@Valid User user) {
@@ -32,15 +36,13 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    @Transactional
-    public void addFriend(User user, User friend) {
-        user.getFriends().add(friend);
-        userRepository.save(user);
-    }
 
     @Transactional
-    public List<User> getAllFriends(User user) {
-        return user.getFriends();
+    public void addFriend(User user, User friend) {
+
+        user.getFriends().add(friend);
+
+        userRepository.saveAndFlush(user);
     }
 
     @Transactional
@@ -74,6 +76,9 @@ public class UserService {
         userRepository.delete(existingUser);// Delete user and associated friendships
     }
 
+    public User getUserByEmail(String userEmail) {
+        return userRepository.findByEmail(userEmail);
+    }
 
     public User getUserById(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
@@ -98,7 +103,7 @@ public class UserService {
         }
 
         if (user.getFirstName() == null || user.getFirstName().isEmpty()) {
-            throw new IllegalArgumentException("The first name is obligatory.");
+            throw new IllegalArgumentException("The first name is required.");
         }
 
         if (user.getLastName() == null || user.getLastName().isEmpty()) {

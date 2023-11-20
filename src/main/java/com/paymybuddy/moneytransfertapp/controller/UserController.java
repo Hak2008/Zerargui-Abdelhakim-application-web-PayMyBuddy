@@ -1,15 +1,23 @@
 package com.paymybuddy.moneytransfertapp.controller;
 
+
+import com.paymybuddy.moneytransfertapp.model.Transaction;
 import com.paymybuddy.moneytransfertapp.model.User;
 import com.paymybuddy.moneytransfertapp.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
-
-@RestController
-@RequestMapping("/api/users")
+@Slf4j
+@Controller
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
@@ -19,21 +27,54 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/login")
+    public String showLoginPage(@ModelAttribute("user") User user) {
+        log.info("Showing login page");
+        return "login";
+    }
+
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public String processLoginForm(@ModelAttribute("user") User user, Model model, HttpServletRequest request) {
+        User existingUser = userService.getUserByEmail(user.getEmail());
+
+        if (existingUser != null && existingUser.getPassword().equals(user.getPassword())) {
+            return "redirect:/transactions/transactionview";
+        } else {
+            model.addAttribute("loginError", true);
+            return "login";
+        }
+    }
+    @GetMapping("/register")
+    public String showRegistrationPage(@ModelAttribute("user") User user) {
+        log.info("Showing registration page");
+        return "register";
+    }
     @PostMapping("/register")
-    public User registerUser(@Valid @RequestBody User user) {
-        return userService.registerUser(user);
+    public String registerUser(@Valid @ModelAttribute("user") User user, Model model) {
+        try {
+            userService.registerUser(user);
+            return "redirect:/users/login";
+        } catch (Exception e) {
+            // En cas d'échec, ajoutez un message d'erreur et renvoyez la vue de création de compte
+            model.addAttribute("registrationError", "An error occurred while creating the account.");
+            return "register";
+        }
+    }
+    @GetMapping("/add-friend")
+    public String showAddFriendPage(@ModelAttribute("user") User user) {
+        return "addfriend";
     }
 
     @PostMapping("/add-friend")
-    public void addFriend(@RequestParam Long userId, @RequestParam Long friendId) {
-        User user = userService.getUserById(userId);
-        User friend = userService.getUserById(friendId);
-        userService.addFriend(user, friend);
-    }
+    public String addFriend(@RequestParam String userEmail, @RequestParam String friendEmail) {
+        log.info("Processing add friend request for user {} and friend {}", userEmail, friendEmail);
+        User user = userService.getUserByEmail(userEmail);
+        User friend = userService.getUserByEmail(friendEmail);
 
-    @GetMapping("/friends")
-    public List<User> getAllFriends(@RequestBody User user) {
-        return userService.getAllFriends(user);
+        if (user != null && friend != null && !user.getFriends().contains(friend)) {
+            userService.addFriend(user, friend);
+        }
+        return "redirect:/transactions/transactionview";
     }
 
 
