@@ -21,6 +21,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Transient
+    private String newPassword;
+
+    @Transient
+    private String confirmPassword;
+
     @Column(nullable = false)
     private String firstName;
 

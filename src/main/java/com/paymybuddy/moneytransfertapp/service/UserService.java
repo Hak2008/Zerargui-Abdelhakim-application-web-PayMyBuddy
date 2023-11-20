@@ -1,11 +1,13 @@
 package com.paymybuddy.moneytransfertapp.service;
 
+import com.paymybuddy.moneytransfertapp.config.PasswordService;
 import com.paymybuddy.moneytransfertapp.exception.UserAlreadyExistsException;
 import com.paymybuddy.moneytransfertapp.exception.UserNotFoundException;
 import com.paymybuddy.moneytransfertapp.model.Transaction;
 import com.paymybuddy.moneytransfertapp.model.User;
 import com.paymybuddy.moneytransfertapp.repository.TransactionRepository;
 import com.paymybuddy.moneytransfertapp.repository.UserRepository;
+import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +26,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final TransactionRepository transactionRepository;
+    private final PasswordService passwordService;
 
     @Transactional
     public User registerUser(@Valid User user) {
@@ -47,8 +50,7 @@ public class UserService {
 
     @Transactional
     public User updateUserProfile(Long userId, User user) {
-
-        Optional<User> existingUserOptional = userRepository.findById(userId);  // Get existing user from database
+        Optional<User> existingUserOptional = userRepository.findById(userId);
 
         if (existingUserOptional.isEmpty()) {
             throw new UserNotFoundException("The user was not found.");
@@ -56,10 +58,16 @@ public class UserService {
 
         User existingUser = existingUserOptional.get();
 
-        existingUser.setAddress(user.getAddress());// Updated user profile fields (address)
-        existingUser.setPhoneNumber(user.getPhoneNumber());// Updated user profile fields (phone number)
+        existingUser.setAddress(user.getAddress());
+        existingUser.setPhoneNumber(user.getPhoneNumber());
 
-        return userRepository.save(existingUser);// Save changes to database
+        // Update password only if new password field is not empty
+        if (StringUtils.isNotBlank(user.getNewPassword()) && user.getNewPassword().equals(user.getConfirmPassword())) {
+            existingUser.setPassword(passwordService.hashPassword(user.getNewPassword()));
+        }
+
+        // Save the updated user to the database
+        return userRepository.save(existingUser);
     }
 
     @Transactional
@@ -88,6 +96,8 @@ public class UserService {
             throw new UserNotFoundException("The user was not found.");
         }
     }
+
+
 
     private void validateUserFields(User user) {
         if (user == null) {

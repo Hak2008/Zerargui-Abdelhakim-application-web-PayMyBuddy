@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #fff;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+      border: 2px solid #000;
+      color: #000;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      padding: 20px;
+    }
+
+    .navbar {
+      background-color: #000;
+    }
+
+    .navbar-brand {
+      color: white;
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 50%;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      height: auto;
+    }
+
+    .card-title {
+      background-color: #28a745;
+      padding: 10px;
+      border-radius: 10px;
+      color: #fff;
+    }
+
+    .bg-light {
+      background-color: #f8f9fa !important;
+    }
+
+    .btn-success {
+      background-color: #28a745;
+      border-color: #28a745;
+    }
+
+    .btn-success:hover {
+      background-color: #218838;
+      border-color: #218838;
+    }
+
+    /* Ajoutez vos styles personnalisés ici */
+  </style>
+  <title>Update</title>
+</head>
+
+<body class="custom-border">
+<nav class="navbar navbar-dark">
+  <span class="navbar-brand mb-0 h1">Pay My Buddy</span>
+</nav>
+<!-- Update Profile Form -->
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-title bg-success text-white p-3">
+      <h2>Update Profile</h2>
+    </div>
+    <div class="card-body">
+      <form th:action="@{/update}" method="put" th:object="${user}" class="needs-validation" novalidate>
+        <div class="form-group">
+          <label for="address">Address</label>
+          <input type="text" class="form-control" id="address" th:field="*{address}" required>
+          <div class="invalid-feedback">Please provide an address.</div>
+        </div>
+        <div class="form-group">
+          <label for="phoneNumber">Phone Number</label>
+          <input type="tel" class="form-control" id="phoneNumber" th:field="*{phoneNumber}" required>
+          <div class="invalid-feedback">Please provide a phone number.</div>
+        </div>
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <input type="password" class="form-control" id="newPassword" th:field="*{newPassword}">
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm New Password</label>
+          <input type="password" class="form-control" id="confirmPassword" th:field="*{confirmPassword}">
+        </div>
+
+
+        <button type="submit" class="btn btn-success">Update Profile</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

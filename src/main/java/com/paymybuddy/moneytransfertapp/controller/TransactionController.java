@@ -48,8 +48,7 @@ public class TransactionController {
             String userEmail = principal.getName();
             log.info("User email from Principal: {}", userEmail);
 
-            User user = userService.getUserByEmail(userEmail);
-            List<Transaction> transactions = transactionService.getUserTransactions(user);
+            List<Transaction> transactions = transactionService.getUserTransactions(userEmail);
 
             model.addAttribute("transactions", transactions);
             log.info("Number of transactions for user {}: {}", userEmail, transactions.size());
@@ -57,6 +56,7 @@ public class TransactionController {
 
         return "transactionview";
     }
+
     @Data
     static class CreateTransactionRequest {
         private User sender;
