@@ -48,6 +48,11 @@ public class UserController {
             // Retrieve user transactions
             List<Transaction> transactions = transactionService.getUserTransactions(existingUser.getEmail());
 
+            // Log the number of transactions
+            log.info("Number of transactions added to model: {}", transactions.size());
+
+            model.addAttribute("transactions", transactionService.getAllTransactions());
+
             // Add transactions to model
             model.addAttribute("transactions", transactions);
 
@@ -57,6 +62,7 @@ public class UserController {
             return "login";
         }
     }
+
 
     @GetMapping("/logout")
     public String logoutUser(HttpServletRequest request) {

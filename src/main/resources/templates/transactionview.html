@@ -141,6 +141,7 @@
 
     <section class="payment-summary rounded">
         <h2 class="mb-4">My Transactions</h2>
+        <h3 th:if="${transactions != null}" th:text="'Number of transactions: ' + ${transactions.size()}"></h3>
         <div class="table-container">
             <table class="table table-bordered custom-border">
                 <thead class="bg-success">

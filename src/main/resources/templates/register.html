@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="PayMyBuddy2.css">
     <style>
         body {
             background-color: #fff;
@@ -54,38 +56,70 @@
             color: #fff;
         }
     </style>
-    <title>register</title>
+    <title>Register - PayMyBuddy</title>
 </head>
 
 <body>
-<!-- Navigation bar -->
 <nav class="navbar navbar-dark">
     <span class="navbar-brand mb-0 h1">Pay My Buddy</span>
 </nav>
-<!-- End of navigation bar -->
 
-<div class="container mt-4">
-    <section class="add-friend-section">
-        <h2 class="mb-4 d-flex justify-content-between align-items-center">Add Friend</h2>
-        <div class="bg-light p-4 rounded">
-            <!-- ... -->
-            <form method="post" action="/add-friend">
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="userId">Your ID</label>
-                        <input type="text" class="form-control" id="userId" name="userId" placeholder="Your ID" required>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="friendEmail">Friend's Email</label>
-                        <input type="email" class="form-control" id="friendEmail" name="friendEmail" placeholder="Friend's Email" required>
-                    </div>
+<div class="container">
+    <div class="banner">
+    </div>
+
+    <div class="circle-container">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title text-center">Create your account</h2>
+            <form action="/users/register" method="post" th:object="${user}" enctype="application/x-www-form-urlencoded">
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i></label>
+                    <input type="email" class="form-control custom-width" id="email" name="email" placeholder="Email" required>
                 </div>
-                <button type="submit" class="btn btn-success">Add Friend</button>
-            </form>
-            <!-- ... -->
 
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-key"></i></label>
+                    <input type="password" class="form-control custom-width" id="password" name="password" placeholder="Password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="firstName"><i class="fas fa-user"></i></label>
+                    <input type="text" class="form-control custom-width" id="firstName" name="firstName" placeholder="First Name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName"><i class="fas fa-user"></i></label>
+                    <input type="text" class="form-control custom-width" id="lastName" name="lastName" placeholder="Last Name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="dateOfBirth"><i class="fas fa-calendar-alt"></i></label>
+                    <input type="text" class="form-control custom-width" id="dateOfBirth" name="dateOfBirth" placeholder="Date of Birth">
+                    <!-- You can use a date picker library here if needed -->
+                </div>
+
+                <div class="form-group">
+                    <label for="address"><i class="fas fa-map-marker-alt"></i></label>
+                    <input type="text" class="form-control custom-width" id="address" name="address" placeholder="Address">
+                </div>
+
+                <div class="form-group">
+                    <label for="phoneNumber"><i class="fas fa-phone"></i></label>
+                    <input type="text" class="form-control custom-width" id="phoneNumber" name="phoneNumber" placeholder="Phone Number">
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </div>
+            </form>
         </div>
-    </section>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

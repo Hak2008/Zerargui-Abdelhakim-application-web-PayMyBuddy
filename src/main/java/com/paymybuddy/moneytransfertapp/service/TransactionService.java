@@ -78,5 +78,10 @@ public class TransactionService {
         }
     }
 
+    public List<Transaction> getAllTransactions() {
+        // Logique pour obtenir toutes les transactions depuis la base de données
+        return transactionRepository.findAll(); // Assurez-vous d'avoir un repository pour les transactions
+    }
+
 
 }
