@@ -82,7 +82,7 @@
 </head>
 
 <body class="custom-border">
-<!-- Navbar noire -->
+
 <nav class="navbar navbar-dark">
     <span class="navbar-brand mb-0 h1">Pay My Buddy</span>
 </nav>
@@ -96,102 +96,48 @@
     </div>
 </div>
 
-<header class="text-white p-3" style="background-color: #f8f9fa;">
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #f8f9fa;">
-        <ul class="navbar-nav ml-auto">
-            <button type="button" class="btn btn-success" onclick="window.location.href='/users/update'">Update Profile</button>
-            <li class="nav-item"><a class="nav-link" href="#">Log Off</a></li>
-        </ul>
-    </nav>
-</header>
-
 <div class="container mt-4">
-    <section class="transfer-section">
-        <h2 class="mb-4 d-flex justify-content-between align-items-center">Send Money
-            <form method="post" th:action="@{/users/add-friend}" class="mb-4">
-                <button type="button" class="btn btn-success" onclick="window.location.href='/users/add-friend'">Add Friend</button>
-            </form>
+    <h2 class="mb-4">My Transactions</h2>
+    <h3 th:if="${transactions != null}" th:text="'Number of transactions: ' + ${transactions.size()}"></h3>
+    <div class="table-container">
+        <table class="table table-bordered custom-border">
+            <thead class="bg-success">
+            <tr>
 
-        </h2>
-        <div class="bg-light p-4 rounded">
-            <form th:object="${createTransactionRequest}" method="post" th:action="@{/transactions/create}" class="mb-4">
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="beneficiary">Select A friend</label>
-                        <select class="custom-select" id="beneficiary" name="beneficiary"></select>
-                    </div>
 
-                    <div class="form-group col-md-4">
-                        <label for="amount">Amount To Transfer</label>
-                        <div class="input-group">
-                            <input type="number" class="form-control" id="amount" name="amount" placeholder="0" min="0" step="1">
-                            <div class="input-group-append">
-                                <span class="input-group-text">€</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label class="invisible">Paye</label>
-                        <button type="submit" class="btn btn-success btn-block">Pay</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </section>
+                <th>Receiver</th>
+                <th>Amount</th>
+                <th>Fee</th>
+                <th>Total Amount</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Payment Reason</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${transactions != null and !transactions.isEmpty()}" th:each="transaction : ${transactions}">
 
-    <section class="payment-summary rounded">
-        <h2 class="mb-4">My Transactions</h2>
-        <h3 th:if="${transactions != null}" th:text="'Number of transactions: ' + ${transactions.size()}"></h3>
-        <div class="table-container">
-            <table class="table table-bordered custom-border">
-                <thead class="bg-success">
-                <tr>
-                    <th>Date</th>
-                    <th>Sender</th>
-                    <th>Receiver</th>
-                    <th>Amount</th>
-                    <th>fee</th>
-                    <th>Total amount</th>
-                    <th>Payment reason</th>
-                    <th>Status</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="transaction : ${transactions}">
-                    <td th:text="${#dates.format(transaction.date, 'dd-MM-yyyy HH:mm')}"></td>
-                    <td th:text="${transaction.sender.accountNumber}"></td>
-                    <td th:text="${transaction.receiver.accountNumber}"></td>
-                    <td th:text="${transaction.amount}"></td>
-                    <td th:text="${transaction.fee}"></td>
-                    <td th:text="${transaction.totalAmount}"></td>
-                    <td th:text="${transaction.paymentReason}"></td>
-                    <td th:text="${transaction.status}"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
 
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">4</a></li>
-            <li class="page-item"><a class="page-link" href="#">5</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+                <td th:text="${transaction.receiver.user.email}"></td>
+                <td th:text="${transaction.amount}"></td>
+                <td th:text="${transaction.fee}"></td>
+                <td th:text="${transaction.totalAmount}"></td>
+                <td th:text="${#dates.format(transaction.date, 'dd-MM-yyyy HH:mm:ss')}"></td>
+                <td th:text="${transaction.status}"></td>
+                <td th:text="${transaction.paymentReason}"></td>
+            </tr>
+            <tr th:if="${transactions == null or transactions.isEmpty()}">
+                <td colspan="9">No transactions available</td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <button type="button" class="btn btn-success mt-4" onclick="window.location.href='/users/home'">
+        <span aria-hidden="true">&larr;</span> Home
+    </button>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>

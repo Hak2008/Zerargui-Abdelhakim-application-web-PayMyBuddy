@@ -68,7 +68,6 @@
       border-color: #218838;
     }
 
-    /* Ajoutez vos styles personnalisés ici */
   </style>
   <title>Update</title>
 </head>
@@ -84,28 +83,40 @@
       <h2>Update Profile</h2>
     </div>
     <div class="card-body">
-      <form th:action="@{/update}" method="put" th:object="${user}" class="needs-validation" novalidate>
+      <form th:action="@{/users/update}" method="post" th:object="${user}" class="needs-validation" novalidate>
+
+        <!-- Add a hidden field for userId -->
+        <input type="hidden" th:field="*{userId}" />
+        <input type="hidden" th:field="*{id}" />
+
         <div class="form-group">
           <label for="address">Address</label>
           <input type="text" class="form-control" id="address" th:field="*{address}" required>
           <div class="invalid-feedback">Please provide an address.</div>
         </div>
+
         <div class="form-group">
           <label for="phoneNumber">Phone Number</label>
           <input type="tel" class="form-control" id="phoneNumber" th:field="*{phoneNumber}" required>
           <div class="invalid-feedback">Please provide a phone number.</div>
         </div>
+
         <div class="form-group">
           <label for="newPassword">New Password</label>
           <input type="password" class="form-control" id="newPassword" th:field="*{newPassword}">
         </div>
+
         <div class="form-group">
           <label for="confirmPassword">Confirm New Password</label>
           <input type="password" class="form-control" id="confirmPassword" th:field="*{confirmPassword}">
         </div>
 
-
         <button type="submit" class="btn btn-success">Update Profile</button>
+      </form>
+
+      <!-- Form for Delete Profile -->
+      <form th:action="@{'/users/delete/' + ${user.id}}" method="post">
+        <button type="submit" class="btn btn-danger"onclick="window.location.href='/users/login'">Delete Profile</button>
       </form>
     </div>
   </div>
@@ -113,6 +124,7 @@
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>

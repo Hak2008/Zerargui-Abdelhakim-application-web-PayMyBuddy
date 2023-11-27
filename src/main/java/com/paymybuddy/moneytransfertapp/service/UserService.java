@@ -1,11 +1,8 @@
 package com.paymybuddy.moneytransfertapp.service;
 
-import com.paymybuddy.moneytransfertapp.config.PasswordService;
 import com.paymybuddy.moneytransfertapp.exception.UserAlreadyExistsException;
 import com.paymybuddy.moneytransfertapp.exception.UserNotFoundException;
-import com.paymybuddy.moneytransfertapp.model.Transaction;
 import com.paymybuddy.moneytransfertapp.model.User;
-import com.paymybuddy.moneytransfertapp.repository.TransactionRepository;
 import com.paymybuddy.moneytransfertapp.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
@@ -15,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -26,7 +21,6 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordService passwordService;
 
     @Transactional
     public User registerUser(@Valid User user) {
@@ -35,6 +29,8 @@ public class UserService {
         if (userRepository.findByEmail(user.getEmail()) != null) {
             throw new UserAlreadyExistsException("The email address is already registered.");
         }
+
+        user.setPassword(user.getPassword());
 
         return userRepository.save(user);
     }
@@ -61,14 +57,22 @@ public class UserService {
         existingUser.setAddress(user.getAddress());
         existingUser.setPhoneNumber(user.getPhoneNumber());
 
-        // Update password only if new password field is not empty
-        if (StringUtils.isNotBlank(user.getNewPassword()) && user.getNewPassword().equals(user.getConfirmPassword())) {
-            existingUser.setPassword(passwordService.hashPassword(user.getNewPassword()));
+        // Update password only if the new password field is not empty
+        if (StringUtils.isNotBlank(user.getNewPassword())) {
+            // Check if the confirmPassword matches the newPassword
+            if (user.getNewPassword().equals(user.getConfirmPassword())) {
+
+                existingUser.setPassword(user.getNewPassword());
+            } else {
+                // Handle the case where newPassword and confirmPassword do not match
+                throw new IllegalArgumentException("New password and confirm password do not match.");
+            }
         }
 
         // Save the updated user to the database
         return userRepository.save(existingUser);
     }
+
 
     @Transactional
     public void deleteUser(Long userId) {

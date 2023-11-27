@@ -3,6 +3,7 @@ package com.paymybuddy.moneytransfertapp.service;
 import com.paymybuddy.moneytransfertapp.model.BankAccount;
 import com.paymybuddy.moneytransfertapp.model.User;
 import com.paymybuddy.moneytransfertapp.repository.BankAccountRepository;
+import com.paymybuddy.moneytransfertapp.repository.TransactionRepository;
 import com.paymybuddy.moneytransfertapp.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import java.math.BigDecimal;
 public class BankAccountService {
 
     private final BankAccountRepository bankAccountRepository;
-    private final UserRepository userRepository;
+    private final TransactionRepository transactionRepository;
 
     @Transactional
     public BankAccount createBankAccount(User user, BigDecimal initialBalance) {
@@ -52,6 +53,15 @@ public class BankAccountService {
     @Transactional
     public BankAccount updateBankAccount(BankAccount bankAccount) {
         return bankAccountRepository.save(bankAccount);
+    }
+
+    @Transactional
+    public void deleteBankAccount(String accountNumber) {
+        // Delete associated transactions
+        transactionRepository.deleteBySenderUser_AccountNumberOrReceiverUser_AccountNumber(accountNumber, accountNumber);
+
+        // Delete bank account
+        bankAccountRepository.deleteByAccountNumber(accountNumber);
     }
 
 }

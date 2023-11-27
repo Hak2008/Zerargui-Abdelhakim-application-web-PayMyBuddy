@@ -1,23 +1,22 @@
 package com.paymybuddy.moneytransfertapp.controller;
 
+import com.paymybuddy.moneytransfertapp.config.SecurityUtils;
 import com.paymybuddy.moneytransfertapp.model.Transaction;
 import com.paymybuddy.moneytransfertapp.model.User;
 import com.paymybuddy.moneytransfertapp.service.TransactionService;
 import com.paymybuddy.moneytransfertapp.service.UserService;
-import lombok.Data;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
-import java.security.Principal;
 import java.util.List;
-
-import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @Slf4j
 @Controller
@@ -32,37 +31,66 @@ public class TransactionController {
         this.userService = userService;
     }
 
-    @PostMapping("/create")
-    public Transaction createTransaction(@RequestBody CreateTransactionRequest request) {
-        return transactionService.createTransaction(
-                request.getSender(),
-                request.getReceiver(),
-                request.getAmount(),
-                request.getPaymentReason()
-        );
+    @GetMapping("/create")
+    public String showCreateTransactionPage(Model model) {
+        model.addAttribute("transaction", new Transaction());
+        return "createTransaction";
     }
 
-    @GetMapping("/transactionview")
-    public String showTransactionView(Model model, Principal principal) {
-        if (principal != null) {
-            String userEmail = principal.getName();
-            log.info("User email from Principal: {}", userEmail);
+    @PostMapping("/create")
+    public String createTransaction(
+            @RequestParam(name = "receiverEmail") String receiverEmail,
+            @RequestParam(name = "amount") BigDecimal amount,
+            @RequestParam(name = "paymentReason") String paymentReason,
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest request
+    ) {
+        // Check if user is logged in
+        if (SecurityUtils.isUserLoggedIn(request)) {
+            try {
+                // Retrieve logged in user's email
+                String senderEmail = SecurityUtils.getLoggedInUserEmail(request);
 
-            List<Transaction> transactions = transactionService.getUserTransactions(userEmail);
+                User sender = userService.getUserByEmail(senderEmail);
+                User receiver = userService.getUserByEmail(receiverEmail);
 
-            model.addAttribute("transactions", transactions);
-            log.info("Number of transactions for user {}: {}", userEmail, transactions.size());
+                // Create the transaction
+                transactionService.createTransaction(sender, receiver, amount, paymentReason);
+
+                redirectAttributes.addFlashAttribute("successMessage", "Transaction created successfully!");
+                // Redirect to homepage after transaction creation
+                return "redirect:/users/home";
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Error creating transaction: " + e.getMessage());
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "You must be logged in to create a transaction.");
         }
 
-        return "transactionview";
+        // Redirect to login page on error
+        return "redirect:/users/login";
     }
 
-    @Data
-    static class CreateTransactionRequest {
-        private User sender;
-        private User receiver;
-        private BigDecimal amount;
-        private String paymentReason;
 
+
+    @GetMapping("/transactionview")
+    public String transactionView(Model model, HttpServletRequest request) {
+        if (SecurityUtils.isUserLoggedIn(request)) {
+            String userEmail = SecurityUtils.getLoggedInUserEmail(request);
+            User user = userService.getUserByEmail(userEmail);
+            List<Transaction> transactions = transactionService.getUserTransactions(userEmail);
+
+            model.addAttribute("user", user);
+            model.addAttribute("transactions", transactions);
+
+            return "transactionView";
+        }
+
+        // Redirect to login page if user is not authenticated
+        return "redirect:/users/login";
     }
+
+
+
+
 }

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="PayMyBuddy2.css">
+  <style>
+    body {
+      background-color: #fff;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+      border: 2px solid #000;
+      color: #000;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      padding: 20px;
+    }
+
+    .navbar {
+      background-color: #000;
+    }
+
+    .navbar-brand {
+      color: white;
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 50%;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      height: auto;
+    }
+
+    .card-title {
+      background-color: #28a745;
+      padding: 10px;
+      border-radius: 10px;
+      color: #fff;
+    }
+
+    .menu-button {
+      margin: 10px;
+    }
+
+    .custom-alert {
+        text-align: center;
+        margin: 0 auto;
+        max-width: 400px;
+    }
+
+    .welcome-message {
+        font-size: 40px;
+        font-weight: bold;
+        color: #333;
+        margin-top: -140px;
+    }
+
+
+  </style>
+  <title>Home</title>
+</head>
+
+<body>
+<nav class="navbar navbar-dark">
+  <span class="navbar-brand mb-0 h1">Pay My Buddy</span>
+</nav>
+
+<div class="container">
+    <div th:if="${user != null}" class="welcome-message">
+        <p>Welcome, <span th:text="${user.firstName}"></span>! </p>
+    </div>
+
+    <div class="btn-group" role="group" aria-label="User Actions">
+        <a th:href="@{/transactions/transactionview}" class="btn btn-success mr-2 rounded">My Transactions</a>
+        <button type="button" class="btn btn-success mr-2 rounded" onclick="window.location.href='/transactions/create'">Create Transaction</button>
+        <button type="button" class="btn btn-success mr-2 rounded" onclick="window.location.href='/users/add-friend'">Add Friend</button>
+        <button type="button" class="btn btn-success mr-2 rounded" onclick="window.location.href='/users/update'">Update Profile</button>
+
+        <form method="post" action="/users/logout">
+            <button type="submit" class="btn btn-success rounded">Log Off</button>
+        </form>
+    </div>
+</div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

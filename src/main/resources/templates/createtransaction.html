@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #fff;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+      border: 2px solid #000;
+      color: #000;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      padding: 20px;
+    }
+
+    .navbar {
+      background-color: #000;
+    }
+
+    .navbar-brand {
+      color: white;
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .btn-success {
+      background-color: #28a745;
+      border-color: #28a745;
+    }
+
+    .btn-success:hover {
+      background-color: #218838;
+      border-color: #218838;
+    }
+
+
+    .transfer-section {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .bg-light {
+      background-color: #f8f9fa;
+    }
+
+    .bg-light p-4 {
+      padding: 10px;
+    }
+
+    .bg-light.rounded {
+      border-radius: 10px;
+    }
+
+    .mb-4 {
+      margin-bottom: 1.5rem;
+    }
+
+    .d-flex {
+      display: flex;
+    }
+
+    .justify-content-between {
+      justify-content: space-between;
+    }
+
+    .align-items-center {
+      align-items: center;
+    }
+
+    .error-message {
+      color: red;
+    }
+
+    .success-message {
+      color: green;
+    }
+
+
+    .transfer-section h2 {
+      background-color: #28a745;
+      padding: 10px;
+      border-radius: 10px;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body class="custom-border">
+
+<nav class="navbar navbar-dark">
+  <span class="navbar-brand mb-0 h1">Pay My Buddy</span>
+</nav>
+
+<!-- Pay My Buddy banner with circles -->
+<div class="banner-container">
+  <div class="circle-container">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+  </div>
+</div>
+
+<header class="text-white p-3" style="background-color: #f8f9fa;">
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #f8f9fa;">
+  </nav>
+</header>
+
+<div class="container mt-4">
+  <section class="transfer-section">
+    <h2 class="mb-4">Send Money</h2>
+    <div class="bg-light p-4 rounded">
+      <div th:if="${errorMessage}" class="error-message">
+        <p th:text="${errorMessage}"></p>
+      </div>
+      <div th:if="${successMessage}" class="success-message">
+        <p th:text="${successMessage}"></p>
+      </div>
+      <form action="/transactions/create" method="post">
+
+
+
+        <label for="receiverEmail">Receiver Email:</label>
+        <input type="text" id="receiverEmail" name="receiverEmail" required />
+
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" required />
+
+        <label for="paymentReason">Payment Reason:</label>
+        <input type="text" id="paymentReason" name="paymentReason" required />
+
+        <!-- Form submit button -->
+        <button type="submit" class="btn btn-success">Create Transaction</button>
+      </form>
+
+    </div>
+  </section>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -77,9 +77,11 @@
 
         <div class="card">
             <div class="card-body">
+
                 <h2 class="card-title text-center">Pay My Buddy</h2>
                 <form action="/users/login" method="post" th:object="${user}" enctype="application/x-www-form-urlencoded">
                     <div class="form-group">
+
                         <label for="email"><i class="fas fa-envelope"></i></label>
                         <input type="email" class="form-control custom-width" id="email" name="email" placeholder="Email" required>
                     </div>
@@ -101,6 +103,9 @@
                         <button type="button" class="btn btn-success" onclick="window.location.href='/users/register'">Create your account</button>
                     </div>
                 </form>
+                <div th:if="${loginError}" class="alert alert-danger mt-3" role="alert">
+                    Incorrect email or password. Please try again.
+                </div>
             </div>
         </div>
     </div>
@@ -108,6 +113,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>

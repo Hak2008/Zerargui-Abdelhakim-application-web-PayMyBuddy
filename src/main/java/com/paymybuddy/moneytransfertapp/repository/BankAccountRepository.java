@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BankAccountRepository extends JpaRepository<BankAccount, String> {
+    void deleteByAccountNumber(String accountNumber);
 
 }
 

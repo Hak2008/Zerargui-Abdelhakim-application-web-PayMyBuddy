@@ -25,6 +25,7 @@ public class TransactionService {
 
     @Transactional
     public Transaction createTransaction(User sender, User receiver, BigDecimal amount, String paymentReason) {
+        log.info("Entering createTransaction method");
         // Check that the sender has sufficient funds
         BigDecimal senderBalance = sender.getBankAccount().getBalance();
         if (senderBalance.compareTo(amount) < 0) {
@@ -55,7 +56,11 @@ public class TransactionService {
         sender.getBankAccount().setBalance(newSenderBalance);
         receiver.getBankAccount().setBalance(newReceiverBalance);
 
+        log.info("Creating transaction. Sender: {}, Beneficiary: {}, Amount: {}, Payment Reason: {}", sender.getEmail(), receiver.getEmail(), amount, paymentReason);
+        log.info("Creating transaction for sender: {}, beneficiary: {}, amount: {}, paymentReason: {}", sender.getEmail(), receiver.getEmail(), amount, paymentReason);
+
         transactionRepository.save(transaction);// Save transaction
+        log.info("Transaction saved. ID: {}", transaction.getId());
 
         // Updating bank accounts
         bankAccountService.updateBankAccount(sender.getBankAccount());
@@ -71,6 +76,11 @@ public class TransactionService {
         if (user != null) {
             List<Transaction> transactions = transactionRepository.findBySenderUserOrReceiverUser(user, user);
             log.info("Number of transactions retrieved: {}", transactions.size());
+
+            for (Transaction transaction : transactions) {
+                log.info("Transaction details: {}", transaction);
+            }
+
             return transactions;
         } else {
             log.warn("User not found with email: {}", userEmail);
@@ -79,9 +89,7 @@ public class TransactionService {
     }
 
     public List<Transaction> getAllTransactions() {
-        // Logique pour obtenir toutes les transactions depuis la base de données
-        return transactionRepository.findAll(); // Assurez-vous d'avoir un repository pour les transactions
+        return transactionRepository.findAll(); //
     }
-
 
 }

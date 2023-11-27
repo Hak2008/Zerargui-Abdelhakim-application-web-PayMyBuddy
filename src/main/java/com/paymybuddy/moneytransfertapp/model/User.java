@@ -22,10 +22,14 @@ public class User {
     private String password;
 
     @Transient
+    private Long userId;
+
+    @Transient
     private String newPassword;
 
     @Transient
     private String confirmPassword;
+
 
     @Column(nullable = false)
     private String firstName;
@@ -65,5 +69,6 @@ public class User {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
     }
+
 
 }
