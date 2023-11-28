@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #fff;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+      border: 2px solid #000;
+      color: #000;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      padding: 20px;
+    }
+
+    .navbar {
+      background-color: #000;
+    }
+
+    .navbar-brand {
+      color: white;
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 50%;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      height: auto;
+    }
+
+    .card-title {
+      background-color: #28a745;
+      padding: 10px;
+      border-radius: 10px;
+      color: #fff;
+    }
+
+    .bg-light {
+      background-color: #f8f9fa !important;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+    }
+
+    .btn-success {
+      background-color: #28a745;
+      border-color: #28a745;
+    }
+
+    .btn-success:hover {
+      background-color: #218838;
+      border-color: #218838;
+    }
+  </style>
+  <title>bankAccount</title>
+</head>
+
+<body class="custom-border">
+
+<nav class="navbar navbar-dark">
+  <span class="navbar-brand mb-0 h1">Pay My Buddy</span>
+</nav>
+
+<!-- Pay My Buddy banner with circles -->
+<div class="banner-container">
+  <div class="circle-container">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+  </div>
+</div>
+
+<div class="container mt-4">
+  <h2 class="mb-4">Bank Account</h2>
+
+  <div class="table-container">
+    <table class="table table-bordered custom-border">
+      <thead class="bg-success">
+      <tr>
+        <th>Account Number</th>
+        <th>Balance</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:if="${userBankAccount != null}">
+        <td th:text="${userBankAccount.accountNumber}"></td>
+        <td th:text="${userBankAccount.balance}"></td>
+      </tr>
+      <tr th:if="${userBankAccount == null}">
+        <td colspan="2">No bank account available</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <button type="button" class="btn btn-success mt-4" onclick="window.location.href='/users/home'">
+    <span aria-hidden="true">&larr;</span> Home
+  </button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

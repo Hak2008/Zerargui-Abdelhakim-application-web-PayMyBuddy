@@ -124,12 +124,7 @@
   <section class="transfer-section">
     <h2 class="mb-4">Send Money</h2>
     <div class="bg-light p-4 rounded">
-      <div th:if="${errorMessage}" class="error-message">
-        <p th:text="${errorMessage}"></p>
-      </div>
-      <div th:if="${successMessage}" class="success-message">
-        <p th:text="${successMessage}"></p>
-      </div>
+
       <form action="/transactions/create" method="post">
 
 
@@ -141,14 +136,23 @@
         <input type="number" id="amount" name="amount" required />
 
         <label for="paymentReason">Payment Reason:</label>
-        <input type="text" id="paymentReason" name="paymentReason" required />
+        <input type="text" id="paymentReason" name="paymentReason"/>
 
         <!-- Form submit button -->
         <button type="submit" class="btn btn-success">Create Transaction</button>
+        <div th:if="${successMessage}" class="alert alert-success mt-3" role="alert">
+          <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger mt-3" role="alert">
+          <span th:text="${errorMessage}"></span>
+        </div>
       </form>
 
     </div>
   </section>
+  <button type="button" class="btn btn-success mt-4" onclick="window.location.href='/users/home'">
+    <span aria-hidden="true">&larr;</span> Home
+  </button>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

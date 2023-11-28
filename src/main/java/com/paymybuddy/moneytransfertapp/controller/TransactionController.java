@@ -42,7 +42,7 @@ public class TransactionController {
             @RequestParam(name = "receiverEmail") String receiverEmail,
             @RequestParam(name = "amount") BigDecimal amount,
             @RequestParam(name = "paymentReason") String paymentReason,
-            RedirectAttributes redirectAttributes,
+            Model model,
             HttpServletRequest request
     ) {
         // Check if user is logged in
@@ -57,18 +57,19 @@ public class TransactionController {
                 // Create the transaction
                 transactionService.createTransaction(sender, receiver, amount, paymentReason);
 
-                redirectAttributes.addFlashAttribute("successMessage", "Transaction created successfully!");
-                // Redirect to homepage after transaction creation
-                return "redirect:/users/home";
-            } catch (Exception e) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Error creating transaction: " + e.getMessage());
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "You must be logged in to create a transaction.");
-        }
+                model.addAttribute("successMessage", "Transaction created successfully!");
+                // Stay on the createTransaction page after transaction creation
 
-        // Redirect to login page on error
-        return "redirect:/users/login";
+            } catch (Exception e) {
+                model.addAttribute("errorMessage", "Error creating transaction.");
+                // Stay on the createTransaction page after encountering an error
+              }
+            return "createTransaction";
+
+        } else {
+            // Redirect to login page on error
+            return "redirect:/users/login";
+        }
     }
 
 
@@ -89,8 +90,6 @@ public class TransactionController {
         // Redirect to login page if user is not authenticated
         return "redirect:/users/login";
     }
-
-
 
 
 }

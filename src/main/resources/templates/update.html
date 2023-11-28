@@ -118,8 +118,19 @@
       <form th:action="@{'/users/delete/' + ${user.id}}" method="post">
         <button type="submit" class="btn btn-danger"onclick="window.location.href='/users/login'">Delete Profile</button>
       </form>
+      <!-- Afficher le message de succès -->
+      <div th:if="${successMessage}" class="alert alert-success mt-3" role="alert">
+        <span th:text="${successMessage}"></span>
+      </div>
+      <!-- Afficher le message d'erreur -->
+      <div th:if="${errorMessage}" class="alert alert-danger mt-3" role="alert">
+        <span th:text="${errorMessage}"></span>
+      </div>
     </div>
   </div>
+  <button type="button" class="btn btn-success mt-4" onclick="window.location.href='/users/home'">
+    <span aria-hidden="true">&larr;</span> Home
+  </button>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

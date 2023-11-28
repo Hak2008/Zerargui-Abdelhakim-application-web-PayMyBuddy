@@ -100,8 +100,7 @@
 
                 <div class="form-group">
                     <label for="dateOfBirth"><i class="fas fa-calendar-alt"></i></label>
-                    <input type="text" class="form-control custom-width" id="dateOfBirth" name="dateOfBirth" placeholder="Date of Birth">
-
+                    <input type="text" class="form-control custom-width" id="dateOfBirth" name="dateOfBirth" placeholder="Date of Birth" required>
                 </div>
 
                 <div class="form-group">
@@ -113,10 +112,14 @@
                     <label for="phoneNumber"><i class="fas fa-phone"></i></label>
                     <input type="text" class="form-control custom-width" id="phoneNumber" name="phoneNumber" placeholder="Phone Number">
                 </div>
+                <div th:if="${registrationErrorMessage}" class="alert alert-danger mt-3" role="alert">
+                    <span th:text="${registrationErrorMessage}"></span>
+                </div>
 
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary">Create Account</button>
                 </div>
+
             </form>
         </div>
     </div>

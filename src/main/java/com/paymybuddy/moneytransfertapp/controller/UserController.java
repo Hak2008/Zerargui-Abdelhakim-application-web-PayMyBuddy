@@ -17,7 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.security.Principal;
+import java.math.BigDecimal;
 
 @Slf4j
 @Controller
@@ -52,6 +52,7 @@ public class UserController {
             return "redirect:/users/home";
         } else {
             model.addAttribute("loginError", true);
+
             return "login";
         }
     }
@@ -68,47 +69,49 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public String logoutUser(HttpServletRequest request) {
+    public String logoutUser(HttpServletRequest request, RedirectAttributes redirectAttributes) {
         SecurityUtils.logoutUser(request);
+        redirectAttributes.addFlashAttribute("logoutMessage", "logout successfully!");
         return "redirect:/users/login";
     }
 
     @GetMapping("/register")
     public String showRegistrationPage(@ModelAttribute("user") User user) {
-
         return "register";
     }
 
     @PostMapping("/register")
-    public String registerUser(@Valid @ModelAttribute("user") User user, HttpSession session) {
+    public String registerUser(@Valid @ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
         try {
             userService.registerUser(user);
 
-            // Add a success message
-            session.setAttribute("successMessage", "User registered successfully!");
+            // Create a BankAccount for the registered user with an initial balance of 0
+            bankAccountService.createBankAccount(user);
+
+            redirectAttributes.addFlashAttribute("successMessage", "User registered successfully!");
 
             // Redirect to login page
             return "redirect:/users/login";
         } catch (Exception e) {
-            // If it fails, add an error message
-            session.setAttribute("registrationError", "An error occurred while creating the account.");
 
-            return "redirect:/users/register";
+            redirectAttributes.addFlashAttribute("registrationErrorMessage", "An error occurred while creating the account.");
+
+            // Return the registration page directly
+            return "register";
         }
     }
 
+
     @GetMapping("/add-friend")
-    public String showAddFriendForm(Model model, HttpServletRequest request) {
+    public String showAddFriendForm(HttpServletRequest request) {
         if (SecurityUtils.isUserLoggedIn(request)) {
-
-            return "addfriend";
+            return "addFriend";
         }
-
         return "redirect:/users/login";
     }
 
     @PostMapping("/add-friend")
-    public String addFriend(@RequestParam String friendEmail, HttpServletRequest request, HttpSession session) {
+    public String addFriend(@RequestParam String friendEmail, HttpServletRequest request, Model model) {
         if (SecurityUtils.isUserLoggedIn(request)) {
             String userEmail = SecurityUtils.getLoggedInUserEmail(request);
             User user = userService.getUserByEmail(userEmail);
@@ -116,14 +119,14 @@ public class UserController {
 
             if (user != null && friend != null && !user.getFriends().contains(friend)) {
                 userService.addFriend(user, friend);
-                // Add a success message
-                session.setAttribute("successMessage", "Friend added successfully!");
+
+                model.addAttribute("addFriendSuccessMessage", "Friend added successfully!");
             } else {
-                // If it fails, add an error message
-                session.setAttribute("errorMessage", "Unable to add friend. Please check the email addresses.");
+                // If it fails, error message
+                model.addAttribute("addFriendErrorMessage", "Unable to add friend. Please check the email addresses.");
             }
 
-            return "redirect:/users/home";
+            return "addFriend";
         }
 
         return "redirect:/users/login";
@@ -146,16 +149,19 @@ public class UserController {
     public String updateUserProfile(
             @RequestParam(name = "id") Long userId,
             @Valid @ModelAttribute User user,
-            RedirectAttributes redirectAttributes
+            Model model
     ) {
         try {
             userService.updateUserProfile(userId, user);
-            redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
-            return "redirect:/users/home";
+            // Success message
+            model.addAttribute("successMessage", "Profile updated successfully!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update profile. Please try again.");
-            return "redirect:/users/update";
+            // Error message
+            model.addAttribute("errorMessage", "Failed to update profile. Please try again.");
         }
+
+        // Return to the "update" page after updating the profile
+        return "update";
     }
 
 

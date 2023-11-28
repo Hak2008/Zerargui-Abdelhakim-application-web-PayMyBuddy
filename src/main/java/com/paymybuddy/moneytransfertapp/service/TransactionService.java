@@ -1,6 +1,7 @@
 package com.paymybuddy.moneytransfertapp.service;
 
 import com.paymybuddy.moneytransfertapp.exception.InsufficientBalanceException;
+import com.paymybuddy.moneytransfertapp.exception.UnauthorizedTransactionException;
 import com.paymybuddy.moneytransfertapp.model.Transaction;
 import com.paymybuddy.moneytransfertapp.model.User;
 import com.paymybuddy.moneytransfertapp.repository.TransactionRepository;
@@ -26,6 +27,10 @@ public class TransactionService {
     @Transactional
     public Transaction createTransaction(User sender, User receiver, BigDecimal amount, String paymentReason) {
         log.info("Entering createTransaction method");
+        // Check if receiver is a friend of the sender
+        if (!isFriend(sender, receiver)) {
+            throw new UnauthorizedTransactionException("You can only create transactions with your friends.");
+        }
         // Check that the sender has sufficient funds
         BigDecimal senderBalance = sender.getBankAccount().getBalance();
         if (senderBalance.compareTo(amount) < 0) {
@@ -62,11 +67,16 @@ public class TransactionService {
         transactionRepository.save(transaction);// Save transaction
         log.info("Transaction saved. ID: {}", transaction.getId());
 
-        // Updating bank accounts
+        // Updating bank account
         bankAccountService.updateBankAccount(sender.getBankAccount());
         bankAccountService.updateBankAccount(receiver.getBankAccount());
 
         return transaction;
+    }
+
+    private boolean isFriend(User user, User friend) {
+        List<User> friends = user.getFriends();
+        return friends != null && friends.contains(friend);
     }
 
     public List<Transaction> getUserTransactions(String userEmail) {
@@ -86,10 +96,6 @@ public class TransactionService {
             log.warn("User not found with email: {}", userEmail);
             return Collections.emptyList();
         }
-    }
-
-    public List<Transaction> getAllTransactions() {
-        return transactionRepository.findAll(); //
     }
 
 }

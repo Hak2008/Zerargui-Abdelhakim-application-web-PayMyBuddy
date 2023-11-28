@@ -11,5 +11,8 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email);
 
+    @Modifying
+    @Query(value = "DELETE FROM friendship WHERE user_id = :userId OR friend_id = :userId", nativeQuery = true)
+    void deleteFriendshipsByUserId(@Param("userId") Long userId);
 }
 

@@ -7,53 +7,80 @@ import com.paymybuddy.moneytransfertapp.repository.TransactionRepository;
 import com.paymybuddy.moneytransfertapp.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-
+import java.util.Optional;
+import java.util.Random;
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BankAccountService {
 
     private final BankAccountRepository bankAccountRepository;
     private final TransactionRepository transactionRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public BankAccount createBankAccount(User user, BigDecimal initialBalance) {
-        if (initialBalance.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Initial balance cannot be negative.");
-        }
+    public BankAccount createBankAccount(User user) {
+        // Generate a unique 9-digit account number randomly
+        String accountNumber = generateAccountNumber();
 
+        // Create a new BankAccount with an initial balance of 1000
         BankAccount bankAccount = new BankAccount();
+        bankAccount.setAccountNumber(accountNumber);
         bankAccount.setUser(user);
-        bankAccount.setBalance(initialBalance);
 
+        // Set initial balance to 1000
+        bankAccount.setBalance(new BigDecimal("1000"));
+
+        // Save the BankAccount to the database
         return bankAccountRepository.save(bankAccount);
     }
 
-    @Transactional
-    public void transferToBankAccount(User user, BigDecimal amount) {
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Invalid transfer amount.");
+    private String generateAccountNumber() {
+        Random random = new Random();
+        int accountNumberLength = 9;
+        StringBuilder accountNumber = new StringBuilder();
+
+        // Generate account number digits
+        for (int i = 0; i < accountNumberLength; i++) {
+            int digit = random.nextInt(10);
+            accountNumber.append(digit);
         }
 
-        BankAccount bankAccount = user.getBankAccount();
-
-        if (bankAccount == null) {
-            throw new IllegalArgumentException("User does not have a bank account.");
-        }
-
-        BigDecimal currentBalance = bankAccount.getBalance();
-        BigDecimal newBalance = currentBalance.add(amount);
-        bankAccount.setBalance(newBalance);
-
-        bankAccountRepository.save(bankAccount);
+        String generatedAccountNumber = accountNumber.toString();
+        System.out.println("Generated Account Number: " + generatedAccountNumber);
+        return generatedAccountNumber;
     }
+
+    public BankAccount getUserBankAccount(String userEmail) {
+        log.info("Getting bank account for user with email: {}", userEmail);
+
+        User user = userRepository.findByEmail(userEmail);
+        if (user != null) {
+            Optional<BankAccount> optionalBankAccount = bankAccountRepository.findByUser_Email(userEmail);
+            if (optionalBankAccount.isPresent()) {
+                BankAccount bankAccount = optionalBankAccount.get();
+                log.info("Bank account details: {}", bankAccount);
+                return bankAccount;
+            } else {
+                log.warn("Bank account not found for user with email: {}", userEmail);
+            }
+        } else {
+            log.warn("User not found with email: {}", userEmail);
+        }
+
+        return null;
+    }
+
 
     @Transactional
     public BankAccount updateBankAccount(BankAccount bankAccount) {
         return bankAccountRepository.save(bankAccount);
     }
+
 
     @Transactional
     public void deleteBankAccount(String accountNumber) {

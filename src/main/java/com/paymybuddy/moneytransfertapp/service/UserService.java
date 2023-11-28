@@ -76,8 +76,7 @@ public class UserService {
 
     @Transactional
     public void deleteUser(Long userId) {
-
-        Optional<User> existingUserOptional = userRepository.findById(userId);// Get the existing user from the database
+        Optional<User> existingUserOptional = userRepository.findById(userId);
 
         if (existingUserOptional.isEmpty()) {
             throw new UserNotFoundException("The user was not found.");
@@ -85,8 +84,13 @@ public class UserService {
 
         User existingUser = existingUserOptional.get();
 
-        userRepository.delete(existingUser);// Delete user and associated friendships
+        // Remove friendships associated with the user
+        userRepository.deleteFriendshipsByUserId(userId);
+
+        // Delete user
+        userRepository.delete(existingUser);
     }
+
 
     public User getUserByEmail(String userEmail) {
         return userRepository.findByEmail(userEmail);
@@ -100,6 +104,8 @@ public class UserService {
             throw new UserNotFoundException("The user was not found.");
         }
     }
+
+
 
 
 

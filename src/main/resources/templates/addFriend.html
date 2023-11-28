@@ -105,15 +105,26 @@
 
       <form method="post" action="/users/add-friend">
 
-        <div class="form-group col-md-10">
+        <div class="form-group col-md-15">
           <label for="friendEmail">Friend's Email</label>
           <input type="email" class="form-control" id="friendEmail" name="friendEmail" placeholder="Friend's Email" required>
         </div>
-        <button type="submit" class="btn btn-success">Add Friend</button>
+
+        <button type="submit" class="btn btn-success ">Add Friend</button>
+        <div th:if="${addFriendSuccessMessage}" class="alert alert-success mt-3" role="alert">
+          <span th:text="${addFriendSuccessMessage}"></span>
+        </div>
+        <div th:if="${addFriendErrorMessage}" class="alert alert-danger mt-3" role="alert">
+          <span th:text="${addFriendErrorMessage}"></span>
+        </div>
+
       </form>
 
     </div>
   </section>
+  <button type="button" class="btn btn-success mt-4" onclick="window.location.href='/users/home'">
+    <span aria-hidden="true">&larr;</span> Home
+  </button>
 </div>
 
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

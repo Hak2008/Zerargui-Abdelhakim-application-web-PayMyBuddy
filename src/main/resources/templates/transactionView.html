@@ -103,8 +103,6 @@
         <table class="table table-bordered custom-border">
             <thead class="bg-success">
             <tr>
-
-
                 <th>Receiver</th>
                 <th>Amount</th>
                 <th>Fee</th>
@@ -116,8 +114,6 @@
             </thead>
             <tbody>
             <tr th:if="${transactions != null and !transactions.isEmpty()}" th:each="transaction : ${transactions}">
-
-
                 <td th:text="${transaction.receiver.user.email}"></td>
                 <td th:text="${transaction.amount}"></td>
                 <td th:text="${transaction.fee}"></td>

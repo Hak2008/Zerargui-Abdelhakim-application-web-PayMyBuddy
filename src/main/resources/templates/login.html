@@ -103,6 +103,12 @@
                         <button type="button" class="btn btn-success" onclick="window.location.href='/users/register'">Create your account</button>
                     </div>
                 </form>
+                <div th:if="${logoutMessage}" class="alert alert-success mt-3" role="alert">
+                    <span th:text="${logoutMessage}"></span>
+                </div>
+                <div th:if="${successMessage}" class="alert alert-success mt-3" role="alert">
+                    <span th:text="${successMessage}"></span>
+                </div>
                 <div th:if="${loginError}" class="alert alert-danger mt-3" role="alert">
                     Incorrect email or password. Please try again.
                 </div>

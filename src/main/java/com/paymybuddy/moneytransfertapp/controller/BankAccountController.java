@@ -1,17 +1,18 @@
 package com.paymybuddy.moneytransfertapp.controller;
 
+import com.paymybuddy.moneytransfertapp.config.SecurityUtils;
 import com.paymybuddy.moneytransfertapp.model.BankAccount;
-import com.paymybuddy.moneytransfertapp.model.User;
 import com.paymybuddy.moneytransfertapp.service.BankAccountService;
 import com.paymybuddy.moneytransfertapp.service.UserService;
-import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.math.BigDecimal;
-
-@RestController
-@RequestMapping("/api/bank-accounts")
+@Controller
+@RequestMapping("/bankaccounts")
 public class BankAccountController {
 
     private final BankAccountService bankAccountService;
@@ -22,22 +23,25 @@ public class BankAccountController {
         this.bankAccountService = bankAccountService;
         this.userService = userService;
     }
+    @GetMapping("/bankaccount")
+    public String viewBankAccount(Model model, HttpServletRequest request) {
+        // Obtain authentication of logged-in user
+        if (SecurityUtils.isUserLoggedIn(request)) {
+            String userEmail = SecurityUtils.getLoggedInUserEmail(request);
+            // Recover the logged-in user's bank account
+            BankAccount userBankAccount = bankAccountService.getUserBankAccount(userEmail);
 
-    @PostMapping("/create")
-    public BankAccount createBankAccount(@RequestParam Long userId, @RequestParam BigDecimal initialBalance) {
-        User user = userService.getUserById(userId);
-        return bankAccountService.createBankAccount(user, initialBalance);
+            // Add the account to the model so that it is accessible in the view
+            model.addAttribute("userBankAccount", userBankAccount);
+
+            return "bankAccount";
+        }
+
+        // Redirect to login page if user is not authenticated
+        return "redirect:/users/login";
     }
 
-    @PostMapping("/transfer")
-    public void transferToBankAccount(@RequestParam Long userId, @RequestParam BigDecimal amount) {
-        User user = userService.getUserById(userId);
-        bankAccountService.transferToBankAccount(user, amount);
-    }
-
-    @PutMapping("/update")
-    public BankAccount updateBankAccount(@Valid @RequestBody BankAccount bankAccount) {
-        return bankAccountService.updateBankAccount(bankAccount);
-    }
 }
+
+
 
