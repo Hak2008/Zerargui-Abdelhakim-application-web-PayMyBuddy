@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Slf4j
@@ -38,9 +39,11 @@ public class UserService {
 
     @Transactional
     public void addFriend(User user, User friend) {
+        if (user.getFriends() == null) {
+            user.setFriends(new ArrayList<>());
+        }
 
         user.getFriends().add(friend);
-
         userRepository.saveAndFlush(user);
     }
 

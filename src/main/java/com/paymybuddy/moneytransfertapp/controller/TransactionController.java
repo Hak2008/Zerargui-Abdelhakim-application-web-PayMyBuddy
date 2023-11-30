@@ -1,6 +1,8 @@
 package com.paymybuddy.moneytransfertapp.controller;
 
 import com.paymybuddy.moneytransfertapp.config.SecurityUtils;
+import com.paymybuddy.moneytransfertapp.exception.InsufficientBalanceException;
+import com.paymybuddy.moneytransfertapp.exception.UnauthorizedTransactionException;
 import com.paymybuddy.moneytransfertapp.model.Transaction;
 import com.paymybuddy.moneytransfertapp.model.User;
 import com.paymybuddy.moneytransfertapp.service.TransactionService;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -54,23 +55,28 @@ public class TransactionController {
                 User sender = userService.getUserByEmail(senderEmail);
                 User receiver = userService.getUserByEmail(receiverEmail);
 
-                // Create the transaction
+                // Attempt to create the transaction
                 transactionService.createTransaction(sender, receiver, amount, paymentReason);
 
                 model.addAttribute("successMessage", "Transaction created successfully!");
                 // Stay on the createTransaction page after transaction creation
-
+                return "createTransaction";
+            } catch (UnauthorizedTransactionException e) {
+                model.addAttribute("errorMessage", e.getMessage());
+            } catch (InsufficientBalanceException e) {
+                model.addAttribute("errorMessage", e.getMessage());
             } catch (Exception e) {
                 model.addAttribute("errorMessage", "Error creating transaction.");
-                // Stay on the createTransaction page after encountering an error
-              }
-            return "createTransaction";
-
+            }
         } else {
             // Redirect to login page on error
             return "redirect:/users/login";
         }
+
+        // Redirect to createTransaction page on error
+        return "createTransaction";
     }
+
 
 
 

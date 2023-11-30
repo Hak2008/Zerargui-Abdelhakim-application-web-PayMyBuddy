@@ -2,12 +2,13 @@ package com.paymybuddy.moneytransfertapp.controller;
 
 
 import com.paymybuddy.moneytransfertapp.config.SecurityUtils;
+import com.paymybuddy.moneytransfertapp.exception.UserAlreadyExistsException;
+import com.paymybuddy.moneytransfertapp.exception.UserNotFoundException;
 import com.paymybuddy.moneytransfertapp.model.User;
 import com.paymybuddy.moneytransfertapp.service.BankAccountService;
 import com.paymybuddy.moneytransfertapp.service.TransactionService;
 import com.paymybuddy.moneytransfertapp.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.math.BigDecimal;
 
 @Slf4j
 @Controller
@@ -52,7 +51,6 @@ public class UserController {
             return "redirect:/users/home";
         } else {
             model.addAttribute("loginError", true);
-
             return "login";
         }
     }
@@ -81,8 +79,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@Valid @ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
+    public String registerUser(@Valid @ModelAttribute("user") User user, Model model, RedirectAttributes redirectAttributes) {
         try {
+            // Attempt to register the user
             userService.registerUser(user);
 
             // Create a BankAccount for the registered user with an initial balance of 0
@@ -92,14 +91,16 @@ public class UserController {
 
             // Redirect to login page
             return "redirect:/users/login";
+        } catch (UserAlreadyExistsException e) {
+            model.addAttribute("registrationErrorMessage", e.getMessage());
         } catch (Exception e) {
-
-            redirectAttributes.addFlashAttribute("registrationErrorMessage", "An error occurred while creating the account.");
-
-            // Return the registration page directly
-            return "register";
+            model.addAttribute("registrationErrorMessage", "An error occurred while creating the account.");
         }
+
+        // Return the registration page directly on error
+        return "register";
     }
+
 
 
     @GetMapping("/add-friend")
@@ -155,27 +156,38 @@ public class UserController {
             userService.updateUserProfile(userId, user);
             // Success message
             model.addAttribute("successMessage", "Profile updated successfully!");
+        } catch (UserNotFoundException e) {
+            // Error message for UserNotFoundException
+            model.addAttribute("errorMessage", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            // Error message for IllegalArgumentException
+            model.addAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
-            // Error message
+            // Generic error message
             model.addAttribute("errorMessage", "Failed to update profile. Please try again.");
         }
-
         // Return to the "update" page after updating the profile
         return "update";
     }
 
 
+
     @PostMapping("/delete/{userId}")
     public String deleteProfile(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
-        // Delete the bank account associated with the user
-        User user = userService.getUserById(userId);
-        if (user != null && user.getBankAccount() != null) {
-            bankAccountService.deleteBankAccount(user.getBankAccount().getAccountNumber());
-        }
-        // Delete user
-        userService.deleteUser(userId);
+        try {
+            // Delete the bank account associated with the user
+            User user = userService.getUserById(userId);
+            if (user != null && user.getBankAccount() != null) {
+                bankAccountService.deleteBankAccount(user.getBankAccount().getAccountNumber());
+            }
+            // Delete user
+            userService.deleteUser(userId);
 
-        redirectAttributes.addFlashAttribute("successMessage", "Profile deleted successfully!");
+            redirectAttributes.addFlashAttribute("successMessage", "Profile deleted successfully!");
+        } catch (UserNotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+
         return "redirect:/users/login";
     }
 

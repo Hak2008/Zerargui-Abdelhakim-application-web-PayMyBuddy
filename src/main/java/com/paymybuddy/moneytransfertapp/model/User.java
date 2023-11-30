@@ -69,6 +69,4 @@ public class User {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
     }
-
-
 }

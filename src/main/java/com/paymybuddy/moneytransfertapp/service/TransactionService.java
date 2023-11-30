@@ -27,28 +27,28 @@ public class TransactionService {
     @Transactional
     public Transaction createTransaction(User sender, User receiver, BigDecimal amount, String paymentReason) {
         log.info("Entering createTransaction method");
+
         // Check if receiver is a friend of the sender
         if (!isFriend(sender, receiver)) {
             throw new UnauthorizedTransactionException("You can only create transactions with your friends.");
         }
+
         // Check that the sender has sufficient funds
         BigDecimal senderBalance = sender.getBankAccount().getBalance();
-        if (senderBalance.compareTo(amount) < 0) {
+        BigDecimal feePercentage = new BigDecimal("0.005");
+        BigDecimal fee = amount.multiply(feePercentage);
+        BigDecimal totalAmount = amount.add(fee);
+
+        if (senderBalance.compareTo(totalAmount) < 0) {
             throw new InsufficientBalanceException("Insufficient balance to complete the transaction.");
         }
-
-        // Calculate fees (0.5% of amount)
-        double feePercentage = 0.005;
-        double fee = amount.doubleValue() * feePercentage;
-
-        BigDecimal totalAmount = amount.add(BigDecimal.valueOf(fee)); // Total amount to transfer (amount + fees)
 
         // Create the transaction
         Transaction transaction = new Transaction();
         transaction.setSender(sender.getBankAccount());
         transaction.setReceiver(receiver.getBankAccount());
         transaction.setAmount(amount);
-        transaction.setFee(fee);
+        transaction.setFee(fee.doubleValue());
         transaction.setTotalAmount(totalAmount);
         transaction.setDate(new Date());
         transaction.setStatus("Completed");
@@ -64,7 +64,8 @@ public class TransactionService {
         log.info("Creating transaction. Sender: {}, Beneficiary: {}, Amount: {}, Payment Reason: {}", sender.getEmail(), receiver.getEmail(), amount, paymentReason);
         log.info("Creating transaction for sender: {}, beneficiary: {}, amount: {}, paymentReason: {}", sender.getEmail(), receiver.getEmail(), amount, paymentReason);
 
-        transactionRepository.save(transaction);// Save transaction
+        // Save transaction
+        transactionRepository.save(transaction);
         log.info("Transaction saved. ID: {}", transaction.getId());
 
         // Updating bank account
@@ -73,6 +74,7 @@ public class TransactionService {
 
         return transaction;
     }
+
 
     private boolean isFriend(User user, User friend) {
         List<User> friends = user.getFriends();
