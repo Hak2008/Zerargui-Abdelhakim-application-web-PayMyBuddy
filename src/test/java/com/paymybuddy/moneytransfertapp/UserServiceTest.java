@@ -1,4 +1,4 @@
-package com.paymybuddy.moneytransfertapp.unit;
+package com.paymybuddy.moneytransfertapp;
 
 import com.paymybuddy.moneytransfertapp.exception.UserAlreadyExistsException;
 import com.paymybuddy.moneytransfertapp.exception.UserNotFoundException;
@@ -66,11 +66,11 @@ public class UserServiceTest {
     @Test
     public void testAddFriend_Success() {
         // Arrange
-        user.setId(1L);
+        user.setEmail("Henri@example.com");
         user.setFriends(null);
 
         User friend = createUser();
-        friend.setId(2L);
+        friend.setEmail("Tom@example.com");
 
         when(userRepository.saveAndFlush(any(User.class))).thenReturn(user);
 
@@ -101,7 +101,6 @@ public class UserServiceTest {
         // Assert
         assertEquals("New Address", result.getAddress());
         assertEquals("New Phone Number", result.getPhoneNumber());
-        // Add more assertions based on your specific implementation
         verify(userRepository, times(1)).findById(userId);
         verify(userRepository, times(1)).save(any(User.class));
     }
