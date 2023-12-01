@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Random;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -26,15 +27,12 @@ public class BankAccountService {
     public BankAccount createBankAccount(User user) {
         // Generate a unique 9-digit account number randomly
         String accountNumber = generateAccountNumber();
-
         // Create a new BankAccount with an initial balance of 1000
         BankAccount bankAccount = new BankAccount();
         bankAccount.setAccountNumber(accountNumber);
         bankAccount.setUser(user);
-
         // Set initial balance to 1000
         bankAccount.setBalance(new BigDecimal("1000"));
-
         // Save the BankAccount to the database
         return bankAccountRepository.save(bankAccount);
     }
@@ -43,15 +41,13 @@ public class BankAccountService {
         Random random = new Random();
         int accountNumberLength = 9;
         StringBuilder accountNumber = new StringBuilder();
-
         // Generate account number digits
         for (int i = 0; i < accountNumberLength; i++) {
             int digit = random.nextInt(10);
             accountNumber.append(digit);
         }
-
         String generatedAccountNumber = accountNumber.toString();
-        System.out.println("Generated Account Number: " + generatedAccountNumber);
+
         return generatedAccountNumber;
     }
 
@@ -71,24 +67,19 @@ public class BankAccountService {
         } else {
             log.warn("User not found with email: {}", userEmail);
         }
-
         return null;
     }
-
 
     @Transactional
     public BankAccount updateBankAccount(BankAccount bankAccount) {
         return bankAccountRepository.save(bankAccount);
     }
 
-
     @Transactional
     public void deleteBankAccount(String accountNumber) {
         // Delete associated transactions
         transactionRepository.deleteBySenderUser_AccountNumberOrReceiverUser_AccountNumber(accountNumber, accountNumber);
-
         // Delete bank account
         bankAccountRepository.deleteByAccountNumber(accountNumber);
     }
-
 }

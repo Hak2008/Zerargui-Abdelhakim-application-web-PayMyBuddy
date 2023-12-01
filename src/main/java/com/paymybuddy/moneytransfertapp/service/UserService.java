@@ -36,7 +36,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-
     @Transactional
     public void addFriend(User user, User friend) {
         if (user.getFriends() == null) {
@@ -71,11 +70,9 @@ public class UserService {
                 throw new IllegalArgumentException("New password and confirm password do not match.");
             }
         }
-
         // Save the updated user to the database
         return userRepository.save(existingUser);
     }
-
 
     @Transactional
     public void deleteUser(Long userId) {
@@ -94,7 +91,6 @@ public class UserService {
         userRepository.delete(existingUser);
     }
 
-
     public User getUserByEmail(String userEmail) {
         return userRepository.findByEmail(userEmail);
     }
@@ -108,31 +104,22 @@ public class UserService {
         }
     }
 
-
-
-
-
     private void validateUserFields(User user) {
         if (user == null) {
             throw new IllegalArgumentException("Invalid user.");
         }
-
         if (user.getEmail() == null || user.getEmail().isEmpty()) {
             throw new IllegalArgumentException("Email address is required.");
         }
-
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
             throw new IllegalArgumentException("The password is required.");
         }
-
         if (user.getFirstName() == null || user.getFirstName().isEmpty()) {
             throw new IllegalArgumentException("The first name is required.");
         }
-
         if (user.getLastName() == null || user.getLastName().isEmpty()) {
             throw new IllegalArgumentException("Last name is required.");
         }
-
         if (user.getDateOfBirth() == null) {
             throw new IllegalArgumentException("The date of birth is required.");
         }

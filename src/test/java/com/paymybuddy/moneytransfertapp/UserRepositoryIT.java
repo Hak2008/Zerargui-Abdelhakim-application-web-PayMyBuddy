@@ -89,7 +89,6 @@ public class UserRepositoryIT {
 
         userRepository.save(user);
 
-
         user.setAddress("3 place");
         user.setPhoneNumber("333 333 333");
         userRepository.save(user);

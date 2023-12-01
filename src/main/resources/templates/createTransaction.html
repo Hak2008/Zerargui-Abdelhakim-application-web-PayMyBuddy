@@ -69,27 +69,6 @@
       margin-bottom: 1.5rem;
     }
 
-    .d-flex {
-      display: flex;
-    }
-
-    .justify-content-between {
-      justify-content: space-between;
-    }
-
-    .align-items-center {
-      align-items: center;
-    }
-
-    .error-message {
-      color: red;
-    }
-
-    .success-message {
-      color: green;
-    }
-
-
     .transfer-section h2 {
       background-color: #28a745;
       padding: 10px;
@@ -98,6 +77,7 @@
       margin-bottom: 20px;
     }
   </style>
+  <title>Create Transaction</title>
 </head>
 
 <body class="custom-border">
@@ -127,8 +107,6 @@
 
       <form action="/transactions/create" method="post">
 
-
-
         <label for="receiverEmail">Receiver Email:</label>
         <input type="text" id="receiverEmail" name="receiverEmail" required />
 
@@ -140,23 +118,29 @@
 
         <!-- Form submit button -->
         <button type="submit" class="btn btn-success">Create Transaction</button>
+
         <div th:if="${successMessage}" class="alert alert-success mt-3" role="alert">
           <span th:text="${successMessage}"></span>
         </div>
         <div th:if="${errorMessage}" class="alert alert-danger mt-3" role="alert">
           <span th:text="${errorMessage}"></span>
         </div>
+
       </form>
 
     </div>
+
   </section>
+
   <button type="button" class="btn btn-success mt-4" onclick="window.location.href='/users/home'">
     <span aria-hidden="true">&larr;</span> Home
   </button>
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>

@@ -1,6 +1,5 @@
 package com.paymybuddy.moneytransfertapp.controller;
 
-
 import com.paymybuddy.moneytransfertapp.config.SecurityUtils;
 import com.paymybuddy.moneytransfertapp.exception.UserAlreadyExistsException;
 import com.paymybuddy.moneytransfertapp.exception.UserNotFoundException;
@@ -24,14 +23,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class UserController {
 
     private final UserService userService;
-    private final TransactionService transactionService;
-
     private final BankAccountService bankAccountService;
 
     @Autowired
-    public UserController(UserService userService, TransactionService transactionService, BankAccountService bankAccountService) {
+    public UserController(UserService userService, BankAccountService bankAccountService) {
         this.userService = userService;
-        this.transactionService = transactionService;
         this.bankAccountService = bankAccountService;
     }
 
@@ -59,6 +55,7 @@ public class UserController {
     public String home(Model model, HttpServletRequest request) {
         if (SecurityUtils.isUserLoggedIn(request)) {
             String userEmail = SecurityUtils.getLoggedInUserEmail(request);
+
             User user = userService.getUserByEmail(userEmail);
 
             model.addAttribute("user", user);
@@ -69,7 +66,9 @@ public class UserController {
     @PostMapping("/logout")
     public String logoutUser(HttpServletRequest request, RedirectAttributes redirectAttributes) {
         SecurityUtils.logoutUser(request);
+
         redirectAttributes.addFlashAttribute("logoutMessage", "logout successfully!");
+
         return "redirect:/users/login";
     }
 
@@ -83,12 +82,10 @@ public class UserController {
         try {
             // Attempt to register the user
             userService.registerUser(user);
-
-            // Create a BankAccount for the registered user with an initial balance of 0
+            // Create a BankAccount for the registered user
             bankAccountService.createBankAccount(user);
 
             redirectAttributes.addFlashAttribute("successMessage", "User registered successfully!");
-
             // Redirect to login page
             return "redirect:/users/login";
         } catch (UserAlreadyExistsException e) {
@@ -96,12 +93,9 @@ public class UserController {
         } catch (Exception e) {
             model.addAttribute("registrationErrorMessage", "An error occurred while creating the account.");
         }
-
         // Return the registration page directly on error
         return "register";
     }
-
-
 
     @GetMapping("/add-friend")
     public String showAddFriendForm(HttpServletRequest request) {
@@ -115,6 +109,7 @@ public class UserController {
     public String addFriend(@RequestParam String friendEmail, HttpServletRequest request, Model model) {
         if (SecurityUtils.isUserLoggedIn(request)) {
             String userEmail = SecurityUtils.getLoggedInUserEmail(request);
+
             User user = userService.getUserByEmail(userEmail);
             User friend = userService.getUserByEmail(friendEmail);
 
@@ -126,10 +121,8 @@ public class UserController {
                 // If it fails, error message
                 model.addAttribute("addFriendErrorMessage", "Unable to add friend. Please check the email addresses.");
             }
-
             return "addFriend";
         }
-
         return "redirect:/users/login";
     }
 
@@ -141,7 +134,6 @@ public class UserController {
             model.addAttribute("user", user);
             return "update";
         } else {
-
             return "redirect:/users/login";
         }
     }
@@ -170,13 +162,12 @@ public class UserController {
         return "update";
     }
 
-
-
     @PostMapping("/delete/{userId}")
     public String deleteProfile(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
         try {
             // Delete the bank account associated with the user
             User user = userService.getUserById(userId);
+
             if (user != null && user.getBankAccount() != null) {
                 bankAccountService.deleteBankAccount(user.getBankAccount().getAccountNumber());
             }
@@ -187,10 +178,8 @@ public class UserController {
         } catch (UserNotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
-
         return "redirect:/users/login";
     }
-
 }
 
 

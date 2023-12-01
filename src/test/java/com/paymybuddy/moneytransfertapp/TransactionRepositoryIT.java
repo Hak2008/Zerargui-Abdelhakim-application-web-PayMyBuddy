@@ -79,5 +79,4 @@ public class TransactionRepositoryIT {
         transactionRepository.deleteAll();
         userRepository.deleteAll();
     }
-
 }

@@ -16,13 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class BankAccountController {
 
     private final BankAccountService bankAccountService;
-    private UserService userService;
 
     @Autowired
-    public BankAccountController(BankAccountService bankAccountService, UserService userService) {
+    public BankAccountController(BankAccountService bankAccountService) {
         this.bankAccountService = bankAccountService;
-        this.userService = userService;
     }
+
     @GetMapping("/bankaccount")
     public String viewBankAccount(Model model, HttpServletRequest request) {
         // Obtain authentication of logged-in user
@@ -30,17 +29,14 @@ public class BankAccountController {
             String userEmail = SecurityUtils.getLoggedInUserEmail(request);
             // Recover the logged-in user's bank account
             BankAccount userBankAccount = bankAccountService.getUserBankAccount(userEmail);
-
             // Add the account to the model so that it is accessible in the view
             model.addAttribute("userBankAccount", userBankAccount);
 
             return "bankAccount";
         }
-
         // Redirect to login page if user is not authenticated
         return "redirect:/users/login";
     }
-
 }
 
 

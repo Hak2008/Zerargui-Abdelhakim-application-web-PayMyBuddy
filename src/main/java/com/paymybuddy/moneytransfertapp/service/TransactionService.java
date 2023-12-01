@@ -23,16 +23,13 @@ public class TransactionService {
     private final UserRepository userRepository;
     private final BankAccountService bankAccountService;
 
-
     @Transactional
     public Transaction createTransaction(User sender, User receiver, BigDecimal amount, String paymentReason) {
         log.info("Entering createTransaction method");
-
         // Check if receiver is a friend of the sender
         if (!isFriend(sender, receiver)) {
             throw new UnauthorizedTransactionException("You can only create transactions with your friends.");
         }
-
         // Check that the sender has sufficient funds
         BigDecimal senderBalance = sender.getBankAccount().getBalance();
         BigDecimal feePercentage = new BigDecimal("0.005");
@@ -42,7 +39,6 @@ public class TransactionService {
         if (senderBalance.compareTo(totalAmount) < 0) {
             throw new InsufficientBalanceException("Insufficient balance to complete the transaction.");
         }
-
         // Create the transaction
         Transaction transaction = new Transaction();
         transaction.setSender(sender.getBankAccount());
@@ -75,7 +71,6 @@ public class TransactionService {
         return transaction;
     }
 
-
     private boolean isFriend(User user, User friend) {
         List<User> friends = user.getFriends();
         return friends != null && friends.contains(friend);
@@ -92,12 +87,10 @@ public class TransactionService {
             for (Transaction transaction : transactions) {
                 log.info("Transaction details: {}", transaction);
             }
-
             return transactions;
         } else {
             log.warn("User not found with email: {}", userEmail);
             return Collections.emptyList();
         }
     }
-
 }

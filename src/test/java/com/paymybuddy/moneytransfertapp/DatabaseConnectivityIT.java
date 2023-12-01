@@ -36,7 +36,6 @@ public class DatabaseConnectivityIT {
     @Autowired
     private TransactionRepository transactionRepository;
 
-
     @Test
     public void testDatabaseConnectivity() {
         assertThat(jdbcTemplate).isNotNull();

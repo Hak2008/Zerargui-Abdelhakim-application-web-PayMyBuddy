@@ -39,35 +39,8 @@
       padding: 20px;
     }
 
-    .card {
-      background-color: #fff;
-      border-radius: 15px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 50%;
-      margin-top: 20px;
-      margin-bottom: 20px;
-      height: auto;
-    }
-
-    .card-title {
-      background-color: #28a745;
-      padding: 10px;
-      border-radius: 10px;
-      color: #fff;
-    }
-
     .bg-light {
       background-color: #f8f9fa !important;
-    }
-
-    .btn-primary {
-      background-color: #007bff;
-      border-color: #007bff;
-    }
-
-    .btn-primary:hover {
-      background-color: #0056b3;
-      border-color: #0056b3;
     }
 
     .btn-success {
@@ -80,7 +53,7 @@
       border-color: #218838;
     }
   </style>
-  <title>addfriend</title>
+  <title>Add Friend</title>
 </head>
 
 <body class="custom-border">
@@ -88,7 +61,6 @@
 <nav class="navbar navbar-dark">
   <span class="navbar-brand mb-0 h1">Pay My Buddy</span>
 </nav>
-
 
 <div class="banner-container">
   <div class="circle-container">
@@ -111,6 +83,7 @@
         </div>
 
         <button type="submit" class="btn btn-success ">Add Friend</button>
+
         <div th:if="${addFriendSuccessMessage}" class="alert alert-success mt-3" role="alert">
           <span th:text="${addFriendSuccessMessage}"></span>
         </div>
@@ -119,15 +92,17 @@
         </div>
 
       </form>
-
     </div>
   </section>
+
   <button type="button" class="btn btn-success mt-4" onclick="window.location.href='/users/home'">
     <span aria-hidden="true">&larr;</span> Home
   </button>
+
 </div>
 
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>

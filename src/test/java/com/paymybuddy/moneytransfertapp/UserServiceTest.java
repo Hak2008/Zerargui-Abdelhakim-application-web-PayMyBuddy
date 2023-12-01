@@ -35,7 +35,6 @@ public class UserServiceTest {
         user = createUser();
     }
 
-
     @Test
     public void testRegisterUser_Success() {
         // Arrange
@@ -70,7 +69,7 @@ public class UserServiceTest {
         user.setFriends(null);
 
         User friend = createUser();
-        friend.setEmail("Tom@example.com");
+        friend.setEmail("user4@example.com");
 
         when(userRepository.saveAndFlush(any(User.class))).thenReturn(user);
 
@@ -91,7 +90,7 @@ public class UserServiceTest {
 
         User updatedUser = createUser();
         updatedUser.setAddress("New Address");
-        updatedUser.setPhoneNumber("New Phone Number");
+        updatedUser.setPhoneNumber("333 333 333");
         updatedUser.setNewPassword("newPassword");
         updatedUser.setConfirmPassword("newPassword");
 
@@ -100,7 +99,7 @@ public class UserServiceTest {
 
         // Assert
         assertEquals("New Address", result.getAddress());
-        assertEquals("New Phone Number", result.getPhoneNumber());
+        assertEquals("333 333 333", result.getPhoneNumber());
         verify(userRepository, times(1)).findById(userId);
         verify(userRepository, times(1)).save(any(User.class));
     }

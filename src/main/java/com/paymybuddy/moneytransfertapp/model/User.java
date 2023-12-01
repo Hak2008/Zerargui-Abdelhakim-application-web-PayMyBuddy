@@ -30,7 +30,6 @@ public class User {
     @Transient
     private String confirmPassword;
 
-
     @Column(nullable = false)
     private String firstName;
 

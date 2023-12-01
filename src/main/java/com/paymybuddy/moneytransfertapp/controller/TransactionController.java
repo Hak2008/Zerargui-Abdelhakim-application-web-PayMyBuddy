@@ -54,7 +54,6 @@ public class TransactionController {
 
                 User sender = userService.getUserByEmail(senderEmail);
                 User receiver = userService.getUserByEmail(receiverEmail);
-
                 // Attempt to create the transaction
                 transactionService.createTransaction(sender, receiver, amount, paymentReason);
 
@@ -72,18 +71,15 @@ public class TransactionController {
             // Redirect to login page on error
             return "redirect:/users/login";
         }
-
         // Redirect to createTransaction page on error
         return "createTransaction";
     }
-
-
-
 
     @GetMapping("/transactionview")
     public String transactionView(Model model, HttpServletRequest request) {
         if (SecurityUtils.isUserLoggedIn(request)) {
             String userEmail = SecurityUtils.getLoggedInUserEmail(request);
+
             User user = userService.getUserByEmail(userEmail);
             List<Transaction> transactions = transactionService.getUserTransactions(userEmail);
 
@@ -92,10 +88,7 @@ public class TransactionController {
 
             return "transactionView";
         }
-
         // Redirect to login page if user is not authenticated
         return "redirect:/users/login";
     }
-
-
 }

@@ -56,7 +56,7 @@
             color: #fff;
         }
     </style>
-    <title>login</title>
+    <title>Login</title>
 </head>
 
 <body>
@@ -80,8 +80,8 @@
 
                 <h2 class="card-title text-center">Pay My Buddy</h2>
                 <form action="/users/login" method="post" th:object="${user}" enctype="application/x-www-form-urlencoded">
-                    <div class="form-group">
 
+                    <div class="form-group">
                         <label for="email"><i class="fas fa-envelope"></i></label>
                         <input type="email" class="form-control custom-width" id="email" name="email" placeholder="Email" required>
                     </div>
@@ -99,19 +99,24 @@
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary">login</button>
                     </div>
+
                     <div class="text-center mt-3">
                         <button type="button" class="btn btn-success" onclick="window.location.href='/users/register'">Create your account</button>
                     </div>
+
                 </form>
+
                 <div th:if="${logoutMessage}" class="alert alert-success mt-3" role="alert">
                     <span th:text="${logoutMessage}"></span>
                 </div>
+
                 <div th:if="${successMessage}" class="alert alert-success mt-3" role="alert">
                     <span th:text="${successMessage}"></span>
                 </div>
                 <div th:if="${loginError}" class="alert alert-danger mt-3" role="alert">
                     Incorrect email or password. Please try again.
                 </div>
+
             </div>
         </div>
     </div>

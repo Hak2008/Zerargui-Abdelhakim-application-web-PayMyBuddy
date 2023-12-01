@@ -56,7 +56,7 @@
             color: #fff;
         }
     </style>
-    <title>Register - PayMyBuddy</title>
+    <title>Register</title>
 </head>
 
 <body>
@@ -78,6 +78,7 @@
         <div class="card-body">
             <h2 class="card-title text-center">Create your account</h2>
             <form action="/users/register" method="post" th:object="${user}" enctype="application/x-www-form-urlencoded">
+
                 <div class="form-group">
                     <label for="email"><i class="fas fa-envelope"></i></label>
                     <input type="email" class="form-control custom-width" id="email" name="email" placeholder="Email" required>
@@ -112,6 +113,7 @@
                     <label for="phoneNumber"><i class="fas fa-phone"></i></label>
                     <input type="text" class="form-control custom-width" id="phoneNumber" name="phoneNumber" placeholder="Phone Number">
                 </div>
+
                 <div th:if="${registrationErrorMessage}" class="alert alert-danger mt-3" role="alert">
                     <span th:text="${registrationErrorMessage}"></span>
                 </div>
@@ -128,6 +130,7 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>
